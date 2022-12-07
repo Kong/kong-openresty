@@ -18,6 +18,8 @@ WORKDIR /tmp
 
 RUN /tmp/build.sh
 
+RUN /tmp/test.sh
+
 # Copy the build result to scratch so we can export the result
 FROM scratch as package
 

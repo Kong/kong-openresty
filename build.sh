@@ -94,7 +94,7 @@ function main() {
 
     package_architecture=x86_64
     if [ "$(arch)" == "aarch64" ]; then
-    package_architecture=aarch64
+        package_architecture=aarch64
     fi
 
     curl -fsSLo atc-router.tar.gz https://github.com/hutchic/atc-router/releases/download/$ATC_ROUTER_VERSION/$package_architecture-unknown-$OSTYPE.tar.gz
