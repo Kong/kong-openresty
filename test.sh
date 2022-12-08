@@ -10,17 +10,15 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 export $(grep -v '^#' $SCRIPT_DIR/.env | xargs)
 
 function test() {
+    echo '--- testing kong runtime (openresty, luarocks) ---'
     cp -R /tmp/build/* /
     mv /tmp/build /tmp/buffer # Check we didn't link dependencies to `/tmp/build/...`
 
-    /usr/local/kong/bin/openssl version     # From kong-openssl test.sh
-    ls -la /usr/local/kong/lib/libyaml.so   # From kong-openssl test.sh
-    ldd /usr/local/kong/lib/libyaml.so
-    ldd /usr/local/kong/bin/openssl
-
     /usr/local/openresty/bin/openresty -v 2>&1 | grep -q ${OPENRESTY_VERSION}
     /usr/local/openresty/bin/openresty -V 2>&1 | grep -q pcre
-    ldd /usr/local/openresty/bin/openresty
+    /usr/local/openresty/bin/openresty -V 2>&1 | grep -q lua-kong-nginx-module
+    /usr/local/openresty/bin/openresty -V 2>&1 | grep -q lua-resty-lmdb
+    /usr/local/openresty/bin/openresty -V 2>&1 | grep -q lua-resty-events
     /usr/local/openresty/bin/resty -e 'print(jit.version)' | grep -q 'LuaJIT[[:space:]][[:digit:]]\+.[[:digit:]]\+.[[:digit:]]\+-[[:digit:]]\{8\}'
 
     ls -l /usr/local/openresty/lualib/resty/websocket/*.lua
@@ -30,6 +28,7 @@ function test() {
     ldd /usr/local/openresty/lualib/libatc_router.so
 
     mv /tmp/buffer /tmp/build
+    echo '--- tested kong runtime ---'
 }
 
 test
